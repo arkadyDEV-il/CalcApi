@@ -1,0 +1,99 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "title" : "Calculator API",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://localhost:5001"
+  } ],
+  "paths" : {
+    "/calc" : {
+      "post" : {
+        "parameters" : [ {
+          "description" : "The arithmetic operation to perform",
+          "explode" : false,
+          "in" : "header",
+          "name" : "X-Op",
+          "required" : true,
+          "schema" : {
+            "enum" : [ "add", "sub", "mul", "div" ],
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CalcRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CalcResponse"
+                }
+              }
+            },
+            "description" : "Successful calculation"
+          },
+          "400" : {
+            "description" : "Invalid input (e.g., bad header value, division by zero)"
+          },
+          "401" : {
+            "description" : "Unauthorized (missing/invalid JWT)"
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ],
+        "summary" : "Perform an arithmetic operation on two numbers",
+        "tags" : [ "calc" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "CalcRequest" : {
+        "example" : {
+          "number1" : 0.8008281904610115,
+          "number2" : 6.027456183070403
+        },
+        "properties" : {
+          "number1" : {
+            "type" : "number"
+          },
+          "number2" : {
+            "type" : "number"
+          }
+        },
+        "required" : [ "number1", "number2" ],
+        "type" : "object"
+      },
+      "CalcResponse" : {
+        "example" : {
+          "result" : 0.8008281904610115
+        },
+        "properties" : {
+          "result" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "bearerFormat" : "JWT",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}
